@@ -5,26 +5,37 @@ clear
 % 1 = Office
 % 2 = RedChair
 % 3 = EnterExitCrossingPaths2cor
-folderName = ImageFolderName(2);
-path = strcat(folderName,'*.jpg');
-srcFiles = dir(path);
+folder = 2;
+dataList = {'Office', 'RedChair', 'EnterExitCrossingPaths2cor'};
+
+threshold = 15;
+filePath =[];
+filePath.path = fullfile('sample_data', dataList{folder}, dataList{folder});
+filePath.images = fullfile(filePath.path,'*.jpg');
+
+srcFiles = dir(filePath.images);
 
 % read the frame of the image
 for i = 1 : length(srcFiles)
-    filename = strcat(folderName,srcFiles(i).name);
-    A = imread(filename);
-    Image(:,:,i)= rgb2gray(A);
+    filename = fullfile(filePath.path,srcFiles(i).name);
+    Image(:,:,i)= rgb2gray(imread(filename));
 end
-%temporalImage = temporalFilter(double(Image));
 
-smoothFilter3=smoothingFilter(Image, 3);
+temporalImage = temporalFilter(double(Image));
+maskOutput = mask(temporalImage,threshold);
+temp = double(Image(:,:,2:length(srcFiles)-1)).* maskOutput;
 
+out = one_D_Gaussin(double(Image) ,2);
+dim=size(out);
+x= floor((length(srcFiles)-dim(3))/2);
+maskOutput1 = mask(double(Image(:,:,1+x:length(srcFiles)-x)) - out,threshold);
+temp1 = double(Image(:,:,1+x:length(srcFiles)-x)).* maskOutput1;
 
-%for testing only
 figure
-imshow(Image(:,:,1));
+imshow(Image(:,:,51));
 
-%figure
-%imshow(temporalImage(:,:,1));
 figure
-imshow(smoothFilter3(:,:,1));
+imshow(temp(:,:,50));
+
+figure
+imshow(temp1(:,:,47));
