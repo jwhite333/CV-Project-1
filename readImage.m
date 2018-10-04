@@ -1,4 +1,4 @@
-function readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice)
+function readImage(filePath, resultFolder, threshold, tsigma, ssigma, Derivativechoice, smoothingChoice)
 srcFiles = dir(filePath.images);
 
 % derivative filter choice
@@ -14,9 +14,6 @@ switch Derivativechoice
         index = 7;
         gaussianFilter = fspecial ('gauss', [1 7], tsigma);
 end
-
-% Set threshold for high temporal derivative
-threshold = 15;
 
 % Create initial temp matrix for images
 temporalImages = rgb2gray(imread(fullfile(filePath.path,srcFiles(1).name)));
