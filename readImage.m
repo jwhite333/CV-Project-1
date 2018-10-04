@@ -7,18 +7,18 @@ srcFiles = dir(filePath.images);
 switch Derivativechoice
     case 1
         % Set 1-Dderivative filter
-        index = 3;
+        derFilterSize = 3;
         derivativeFilter = 0.5 * [-1,0,1];
     case 2
         % 1D derivative of a Gaussian
-        index = 7;
+        derFilterSize = 7;
         gaussianFilter = fspecial ('gauss', [1 7], tsigma);
 end
 
 % Create initial temp matrix for images
-temporalImages = rgb2gray(imread(fullfile(filePath.path,srcFiles(1).name)));
-for n = 2:index
-    temporalImages(:,:,n) = rgb2gray(imread(fullfile(filePath.path,srcFiles(n).name)));
+temporalImages = smoothImage(rgb2gray(imread(fullfile(filePath.path,srcFiles(1).name))), smoothingChoice);
+for n = 2:derFilterSize
+    temporalImages(:,:,n) = smoothImage(rgb2gray(imread(fullfile(filePath.path,srcFiles(n).name))), smoothingChoice);
 end
 
 % Get image size
@@ -32,29 +32,15 @@ motionCapImage(1:imageDimX,1:imageDimY) = 0;
 % Create result folder
 if 7 ~= (exist('results', 'dir'))
     mkdir('results', resultFolder);
-else
+end
+if 7 ~= (exist(fullfile('results', resultFolder), 'dir'))
     mkdir(fullfile('results', resultFolder));
 end
 
-% Loop through data set in intervals of 3 images
+% Loop through data set in intervals of 'derFilterSize' images
 disp(length(srcFiles));
-for image = 4:(length(srcFiles)-1)
-    
-    % Spatial smoothing choice
-    switch smoothingChoice
-        case 1
-            % none
-        case 2
-            % 3x3 box filter
-            temporalImages = boxFilter(temporalImages, 3);
-        case 3
-            % 5x5 box filter
-            temporalImages = boxFilter(temporalImages, 5);
-        case 4
-            % 2D Gaussian filters
-            temporalImages = two_D_GaussinFilter(temporalImages, ssigma);
-    end
-    
+for image = derFilterSize:(length(srcFiles)-1)
+
     % Set temp image points = 0
     motionCapImage = zeros(size(motionCapImage));
     
@@ -81,21 +67,19 @@ for image = 4:(length(srcFiles)-1)
     end
     
     % Output motion capture image
-    %     figure(1)
-    %     imshow(motionCapImage);
-    %     figure(2)
-    %     imshow(temporalImages(:,:,2));
+    % figure(1)
+    % imshow(motionCapImage);
+    % figure(2)
+    % imshow(temporalImages(:,:,ceil(derFilterSize/2)));
     
-    % Write to file
-    imwrite(motionCapImage, fullfile('results', resultFolder, srcFiles(image-1).name));
+    % Write to file This Line is broken for me
+    imwrite(motionCapImage, fullfile('results', resultFolder, srcFiles(image-floor(derFilterSize/2)).name));
     
     % Get new image
-    for n = 1:index - 1
+    for n = 1:derFilterSize - 1
         temporalImages(:,:,n) = temporalImages(:,:,n+1);
     end
-    disp(image+1);
-    temporalImages(:,:,index) = rgb2gray(imread(fullfile(filePath.path, srcFiles(image+1).name)));
-    
+    temporalImages(:,:,derFilterSize) = smoothImage(rgb2gray(imread(fullfile(filePath.path, srcFiles(image+1).name))), smoothingChoice);
 end
 
 end
