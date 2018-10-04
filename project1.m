@@ -1,3 +1,4 @@
+%% Parameter set up
 clc
 clear
 
@@ -12,90 +13,183 @@ dataSetName = {'Office', 'RedChair', 'EnterExitCrossingPaths2cor'};
 filePath = [];
 filePath.path = fullfile('sample_data', dataSetName{dataSet}, dataSetName{dataSet});
 filePath.images = fullfile(filePath.path,'*.jpg');
-srcFiles = dir(filePath.images);
 
-% Set threshold for high temporal derivative
-threshold = 15;
 
-% Set derivative filter
-derivativeFilter = [-1,0,1];
+%% Temporal Derivative with filter 0.5[-1 0 1]
+% Derivative filter choice
+% 1 = Temporal Derivative with filter 0.5[-1 0 1]
+% 2 = 1D derivative of a Gaussian
+Derivativechoice = 1;
 
-% Create initial temp matrix of 3 images
-temporalImages = rgb2gray(imread(fullfile(filePath.path,srcFiles(1).name)));
-temporalImages(:,:,2) = rgb2gray(imread(fullfile(filePath.path,srcFiles(2).name)));
-temporalImages(:,:,3) = rgb2gray(imread(fullfile(filePath.path,srcFiles(3).name)));
+% TSigma value for 1D derivative gaussian
+tsigma = 0;
 
-% Get image size
-imageDim = size(temporalImages);
-imageDimX = imageDim(1);
-imageDimY = imageDim(2);
+% Standard deviation ssigma for 2D Gaussian filters
+ssigma = 0;
 
-% Create image to monitor motion
-motionCapImage(1:imageDimX,1:imageDimY) = 0;
-results = [];
+% Spatial smoothing choice
+% 1 = none
+% 2 = 3x3 box filter
+% 3 = 5x5 box filter
+% 4 = 2D Gaussian filters
+smoothingChoice = 1;
 
-% Loop through data set in intervals of 3 images
-disp(length(srcFiles));
-for image = 3:(length(srcFiles)-1)
+resultFolder = strcat(dataSetName{dataSet},"_temporal_Derivative_Filter");
+readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
 
-    % Set temp image points = 0
-    motionCapImage = zeros(size(motionCapImage));
 
-    % Get derivative
-    for i = 1:imageDimX
-        for j = 1:imageDimY
-            pixelValues(1:3) = double(temporalImages(i,j,1:3));
-            pixelDerivative = derivativeFilter * pixelValues.';
-            if abs(pixelDerivative) > threshold
-                motionCapImage(i,j) = 1;
-            end
-        end
-    end
+%% 1D derivative of a Gaussian
+% choice
+% 1 = Temporal Derivative with filter 0.5[-1 0 1]
+% 2 = 1D derivative of a Gaussian
+Derivativechoice = 2;
 
-    % Output motion capture image
-    figure(1)
-    imshow(motionCapImage);
-    figure(2)
-    imshow(temporalImages(:,:,2));
-    
-    % Write to file
-    if 7 ~= (exist('results', 'dir'))
-        mkdir('results');
-    end
-    imwrite(motionCapImage, fullfile('results',srcFiles(image-1).name));
+% Tsigma value for 1D derivative gaussian
+tsigma = 2;
 
-    % Get new image
-    temporalImages(:,:,1) = temporalImages(:,:,2);
-    temporalImages(:,:,2) = temporalImages(:,:,3);
-    disp(image+1);
-    temporalImages(:,:,3) = rgb2gray(imread(fullfile(filePath.path,srcFiles(image+1).name)));
+% Standard deviation ssigma for 2D Gaussian filter
+ssigma = 0;
 
-end
+% Spatial smoothing choice
+% 1 = none
+% 2 = 3x3 box filter
+% 3 = 5x5 box filter
+% 4 = 2D Gaussian filters
+smoothingChoice = 1;
 
-% Temporarily removing this while I change it to work using 3 images at
-% a time
+resultFolder = strcat(dataSetName{dataSet},"_1D_Derivative_Filter");
+readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
 
-% read the frame of the image
-% for i = 1 : length(srcFiles)
-%     filename = fullfile(filePath.path,srcFiles(i).name);
-%     Image(:,:,i)= rgb2gray(imread(filename));
-% end
-% 
-% temporalImage = temporalFilter(double(Image));
-% maskOutput = mask(temporalImage,threshold);
-% temp = double(Image(:,:,2:length(srcFiles)-1)).* maskOutput;
-% 
-% out = one_D_Gaussin(double(Image) ,2);
-% dim=size(out);
-% x= floor((length(srcFiles)-dim(3))/2);
-% maskOutput1 = mask(double(Image(:,:,1+x:length(srcFiles)-x)) - out,threshold);
-% temp1 = double(Image(:,:,1+x:length(srcFiles)-x)).* maskOutput1;
-% 
-% figure
-% imshow(Image(:,:,51));
-% 
-% figure
-% imshow(temp(:,:,50));
-% 
-% figure
-% imshow(temp1(:,:,47));
+
+%% Temporal Derivative with filter 0.5[-1 0 1] with 3x3 box filter
+% Derivative filter choice
+% 1 = Temporal Derivative with filter 0.5[-1 0 1]
+% 2 = 1D derivative of a Gaussian
+Derivativechoice = 1;
+
+% TSigma value for 1D derivative gaussian
+tsigma = 0;
+
+% Standard deviation ssigma for 2D Gaussian filters
+ssigma = 0;
+
+% Spatial smoothing choice
+% 1 = none
+% 2 = 3x3 box filter
+% 3 = 5x5 box filter
+% 4 = 2D Gaussian filters
+smoothingChoice = 2;
+
+resultFolder = strcat(dataSetName{dataSet},"_temporal_Derivative_Filter","_with_3x3Filter");
+readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+
+%% Temporal Derivative with filter 0.5[-1 0 1] with 5x5 box filter
+% Derivative filter choice
+% 1 = Temporal Derivative with filter 0.5[-1 0 1]
+% 2 = 1D derivative of a Gaussian
+Derivativechoice = 1;
+
+% TSigma value for 1D derivative gaussian
+tsigma = 0;
+
+% Standard deviation ssigma for 2D Gaussian filters
+ssigma = 0;
+
+% Spatial smoothing choice
+% 1 = none
+% 2 = 3x3 box filter
+% 3 = 5x5 box filter
+% 4 = 2D Gaussian filters
+smoothingChoice = 3;
+
+resultFolder = strcat(dataSetName{dataSet},"_temporal_Derivative_Filter","_with_5x5Filter");
+readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+
+%% Temporal Derivative with filter 0.5[-1 0 1] with 2D Gaussian filter
+% Derivative filter choice
+% 1 = Temporal Derivative with filter 0.5[-1 0 1]
+% 2 = 1D derivative of a Gaussian
+Derivativechoice = 1;
+
+% TSigma value for 1D derivative gaussian
+tsigma = 0;
+
+% Standard deviation ssigma for 2D Gaussian filters
+ssigma = 1.4;
+
+% Spatial smoothing choice
+% 1 = none
+% 2 = 3x3 box filter
+% 3 = 5x5 box filter
+% 4 = 2D Gaussian filters
+smoothingChoice = 4;
+
+resultFolder = strcat(dataSetName{dataSet},"_temporal_Derivative_Filter","_with_2DGauss");
+readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+
+
+%% 1D derivative of a Gaussian with 3x3 box filter
+% choice
+% 1 = Temporal Derivative with filter 0.5[-1 0 1]
+% 2 = 1D derivative of a Gaussian
+Derivativechoice = 2;
+
+% Tsigma value for 1D derivative gaussian
+tsigma = 2;
+
+% Standard deviation ssigma for 2D Gaussian filter
+ssigma = 0;
+
+% Spatial smoothing choice
+% 1 = none
+% 2 = 3x3 box filter
+% 3 = 5x5 box filter
+% 4 = 2D Gaussian filters
+smoothingChoice = 2;
+
+resultFolder = strcat(dataSetName{dataSet},"_1D_Derivative_Filter", "_with_3x3Filter");
+readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+
+%% 1D derivative of a Gaussian with 5x5 box filter
+% choice
+% 1 = Temporal Derivative with filter 0.5[-1 0 1]
+% 2 = 1D derivative of a Gaussian
+Derivativechoice = 2;
+
+% Tsigma value for 1D derivative gaussian
+tsigma = 2;
+
+% Standard deviation ssigma for 2D Gaussian filter
+ssigma = 0;
+
+% Spatial smoothing choice
+% 1 = none
+% 2 = 3x3 box filter
+% 3 = 5x5 box filter
+% 4 = 2D Gaussian filters
+smoothingChoice = 3;
+
+resultFolder = strcat(dataSetName{dataSet},"_1D_Derivative_Filter", "_with_5x5Filter");
+readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+
+%% 1D derivative of a Gaussian with 2D Gaussian Filter
+% choice
+% 1 = Temporal Derivative with filter 0.5[-1 0 1]
+% 2 = 1D derivative of a Gaussian
+Derivativechoice = 2;
+
+% Tsigma value for 1D derivative gaussian
+tsigma = 2;
+
+% Standard deviation ssigma for 2D Gaussian filter
+ssigma = 1.4;
+
+% Spatial smoothing choice
+% 1 = none
+% 2 = 3x3 box filter
+% 3 = 5x5 box filter
+% 4 = 2D Gaussian filters
+smoothingChoice = 4;
+
+resultFolder = strcat(dataSetName{dataSet},"_1D_Derivative_Filter", "_with_2DGauss");
+readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
