@@ -1,8 +1,8 @@
 function [outputImage] = boxFilter(Image, filterSize)
-dim = size(Image);
+[m, n, t] = size(Image);
 outputImage = Image;
 
-for n=1:dim(3)
+for n=1:t
     outputImage(:,:,n)=imboxfilt(Image(:,:,n), filterSize);
 end
 end

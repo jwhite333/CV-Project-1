@@ -1,4 +1,4 @@
-function [outputImage] = smoothImage(image, smoothingChoice)
+function [outputImage] = smoothImage(image, smoothingChoice, ssigma)
 
 switch smoothingChoice
     case 1
@@ -13,6 +13,7 @@ switch smoothingChoice
     case 4
         % 2D Gaussian filters
         outputImage = two_D_GaussinFilter(image, ssigma);
-    end
+end
+    
 end
 

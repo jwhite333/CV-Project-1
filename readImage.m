@@ -16,9 +16,9 @@ switch Derivativechoice
 end
 
 % Create initial temp matrix for images
-temporalImages = smoothImage(rgb2gray(imread(fullfile(filePath.path,srcFiles(1).name))), smoothingChoice);
+temporalImages = smoothImage(rgb2gray(imread(fullfile(filePath.path,srcFiles(1).name))), smoothingChoice, ssigma);
 for n = 2:derFilterSize
-    temporalImages(:,:,n) = smoothImage(rgb2gray(imread(fullfile(filePath.path,srcFiles(n).name))), smoothingChoice);
+    temporalImages(:,:,n) = smoothImage(rgb2gray(imread(fullfile(filePath.path,srcFiles(n).name))), smoothingChoice, ssigma);
 end
 
 % Get image size
@@ -30,10 +30,10 @@ imageDimY = imageDim(2);
 motionCapImage(1:imageDimX,1:imageDimY) = 0;
 
 % Create result folder
-if 7 ~= (exist('results', 'dir'))
+if 7 ~= exist('results', 'dir')
     mkdir('results', resultFolder);
 end
-if 7 ~= (exist(fullfile('results', resultFolder), 'dir'))
+if 7 ~= exist(fullfile('results', resultFolder), 'dir')
     mkdir(fullfile('results', resultFolder));
 end
 
@@ -79,7 +79,7 @@ for image = derFilterSize:(length(srcFiles)-1)
     for n = 1:derFilterSize - 1
         temporalImages(:,:,n) = temporalImages(:,:,n+1);
     end
-    temporalImages(:,:,derFilterSize) = smoothImage(rgb2gray(imread(fullfile(filePath.path, srcFiles(image+1).name))), smoothingChoice);
+    temporalImages(:,:,derFilterSize) = smoothImage(rgb2gray(imread(fullfile(filePath.path, srcFiles(image+1).name))), smoothingChoice, ssigma);
 end
 
 end
