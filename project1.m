@@ -14,6 +14,8 @@ filePath = [];
 filePath.path = fullfile('sample_data', dataSetName{dataSet}, dataSetName{dataSet});
 filePath.images = fullfile(filePath.path,'*.jpg');
 
+% Set threshold for high temporal derivative
+threshold = 15;
 
 %% Temporal Derivative with filter 0.5[-1 0 1]
 % Derivative filter choice
@@ -35,7 +37,7 @@ ssigma = 0;
 smoothingChoice = 1;
 
 resultFolder = strcat(dataSetName{dataSet},"_temporal_Derivative_Filter");
-readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+readImage(filePath, resultFolder, threshold,tsigma, ssigma, Derivativechoice, smoothingChoice);
 
 
 %% 1D derivative of a Gaussian
@@ -58,7 +60,7 @@ ssigma = 0;
 smoothingChoice = 1;
 
 resultFolder = strcat(dataSetName{dataSet},"_1D_Derivative_Filter");
-readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+readImage(filePath, resultFolder, threshold,tsigma, ssigma, Derivativechoice, smoothingChoice);
 
 
 %% Temporal Derivative with filter 0.5[-1 0 1] with 3x3 box filter
@@ -81,7 +83,7 @@ ssigma = 0;
 smoothingChoice = 2;
 
 resultFolder = strcat(dataSetName{dataSet},"_temporal_Derivative_Filter","_with_3x3Filter");
-readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+readImage(filePath, resultFolder, threshold,tsigma, ssigma, Derivativechoice, smoothingChoice);
 
 %% Temporal Derivative with filter 0.5[-1 0 1] with 5x5 box filter
 % Derivative filter choice
@@ -103,7 +105,7 @@ ssigma = 0;
 smoothingChoice = 3;
 
 resultFolder = strcat(dataSetName{dataSet},"_temporal_Derivative_Filter","_with_5x5Filter");
-readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+readImage(filePath, resultFolder, threshold,tsigma, ssigma, Derivativechoice, smoothingChoice);
 
 %% Temporal Derivative with filter 0.5[-1 0 1] with 2D Gaussian filter
 % Derivative filter choice
@@ -125,7 +127,7 @@ ssigma = 1.4;
 smoothingChoice = 4;
 
 resultFolder = strcat(dataSetName{dataSet},"_temporal_Derivative_Filter","_with_2DGauss");
-readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+readImage(filePath, resultFolder, threshold,tsigma, ssigma, Derivativechoice, smoothingChoice);
 
 
 %% 1D derivative of a Gaussian with 3x3 box filter
@@ -148,7 +150,7 @@ ssigma = 0;
 smoothingChoice = 2;
 
 resultFolder = strcat(dataSetName{dataSet},"_1D_Derivative_Filter", "_with_3x3Filter");
-readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+readImage(filePath, resultFolder, threshold,tsigma, ssigma, Derivativechoice, smoothingChoice);
 
 %% 1D derivative of a Gaussian with 5x5 box filter
 % choice
@@ -170,7 +172,7 @@ ssigma = 0;
 smoothingChoice = 3;
 
 resultFolder = strcat(dataSetName{dataSet},"_1D_Derivative_Filter", "_with_5x5Filter");
-readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+readImage(filePath, resultFolder, threshold,tsigma, ssigma, Derivativechoice, smoothingChoice);
 
 %% 1D derivative of a Gaussian with 2D Gaussian Filter
 % choice
@@ -192,4 +194,4 @@ ssigma = 1.4;
 smoothingChoice = 4;
 
 resultFolder = strcat(dataSetName{dataSet},"_1D_Derivative_Filter", "_with_2DGauss");
-readImage(filePath, resultFolder, tsigma, ssigma, Derivativechoice, smoothingChoice);
+readImage(filePath, resultFolder, threshold,tsigma, ssigma, Derivativechoice, smoothingChoice);
