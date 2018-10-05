@@ -40,10 +40,11 @@ end
 % Loop through data set in intervals of 'derFilterSize' images
 disp(length(srcFiles));
 for image = derFilterSize:(length(srcFiles)-1)
-
-    % Set temp image points = 0
-    motionCapImage = zeros(size(motionCapImage));
     
+    % Set temp image points = 0
+    [m,n,d]=size(motionCapImage);
+    motionCapImage = zeros(m,n,3);
+    tempThresh =zeros(m,n);
     % Get derivative
     for i = 1:imageDimX
         for j = 1:imageDimY
@@ -61,11 +62,15 @@ for image = derFilterSize:(length(srcFiles)-1)
             
             % Generate the Mask
             if abs(pixelDerivative) > threshold
-                motionCapImage(i,j) = 1;
+                tempThresh(i,j) = 1;
             end
+            
         end
     end
     
+    % Combine original image with the mask
+    t=imread(fullfile(filePath.path, srcFiles(image-floor(derFilterSize/2)).name));
+    motionCapImage=double(t) .* double(repmat(tempThresh, [1 1 3]));
     % Output motion capture image
     % figure(1)
     % imshow(motionCapImage);
@@ -73,7 +78,7 @@ for image = derFilterSize:(length(srcFiles)-1)
     % imshow(temporalImages(:,:,ceil(derFilterSize/2)));
     
     % Write to file This Line is broken for me
-    imwrite(motionCapImage, fullfile('results', resultFolder, srcFiles(image-floor(derFilterSize/2)).name));
+    imwrite(uint8(motionCapImage), fullfile('results', resultFolder, srcFiles(image-floor(derFilterSize/2)).name));
     
     % Get new image
     for n = 1:derFilterSize - 1
@@ -81,5 +86,4 @@ for image = derFilterSize:(length(srcFiles)-1)
     end
     temporalImages(:,:,derFilterSize) = smoothImage(rgb2gray(imread(fullfile(filePath.path, srcFiles(image+1).name))), smoothingChoice, ssigma);
 end
-
 end
